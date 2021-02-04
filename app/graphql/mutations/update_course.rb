@@ -9,8 +9,8 @@ module Mutations
     argument :featured, Boolean, required: true
     argument :progression_behavior, Types::ProgressionBehaviorType, required: true
     argument :progression_limit, Integer, required: false
-
-    description "Update a course."
+    argument :price, Integer, required: false
+    description 'Update a course.'
 
     field :course, Types::CourseType, null: true
 
@@ -18,12 +18,12 @@ module Mutations
       mutator = UpdateCourseMutator.new(context, params)
 
       course = if mutator.valid?
-        mutator.notify(:success, 'Done!', 'Course updated successfully!')
-        mutator.update_course
-      else
-        mutator.notify_errors
-        nil
-      end
+          mutator.notify(:success, 'Done!', 'Course updated successfully!')
+          mutator.update_course
+        else
+          mutator.notify_errors
+          nil
+        end
 
       { course: course }
     end

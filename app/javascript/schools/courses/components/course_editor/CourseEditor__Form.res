@@ -32,9 +32,11 @@ type action =
   | UpdateFeatured(bool)
   | UpdateProgressionBehavior(progressionBehavior)
   | UpdateProgressionLimit(int)
+  | UpdatePrice(option<int>)
 
 let reducer = (state, action) =>
   switch action {
+  | UpdatePrice(price) => {...state, dirty: true, price: price}
   | StartSaving => {...state, saving: true}
   | FailSaving => {...state, saving: false}
   | UpdateName(name, hasNameError) => {
@@ -80,8 +82,8 @@ module CreateCourseQuery = %graphql(
 
 module UpdateCourseQuery = %graphql(
   `
-    mutation UpdateCourseMutation($id: ID!, $name: String!, $description: String!, $endsAt: ISO8601DateTime, $about: String!, $publicSignup: Boolean!, $featured: Boolean!, $progressionBehavior: ProgressionBehavior!, $progressionLimit: Int) {
-      updateCourse(id: $id, name: $name, description: $description, endsAt: $endsAt, about: $about, publicSignup: $publicSignup, featured: $featured, progressionBehavior: $progressionBehavior, progressionLimit: $progressionLimit) {
+    mutation UpdateCourseMutation($id: ID!, $name: String!, $description: String!, $endsAt: ISO8601DateTime, $about: String!, $publicSignup: Boolean!, $featured: Boolean!, $progressionBehavior: ProgressionBehavior!, $progressionLimit: Int,$price:Int) {
+      updateCourse(id: $id, name: $name, description: $description, endsAt: $endsAt, about: $about, publicSignup: $publicSignup, featured: $featured, progressionBehavior: $progressionBehavior, progressionLimit: $progressionLimit, price:$price) {
         course {
           ...Course.Fragments.AllFields
         }
@@ -161,6 +163,7 @@ let updateCourse = (state, send, updateCourseCB, course) => {
     ~featured=state.featured,
     ~progressionBehavior=state.progressionBehavior,
     ~progressionLimit=?progressionLimitForQuery(state),
+    ~price=?state.price,
     (),
   )
 
@@ -342,6 +345,11 @@ let make = (~course, ~hideEditorActionCB, ~updateCourseCB) => {
                   value={switch state.price {
                   | None => ""
                   | Some(price) => string_of_int(price)
+                  }}
+                  onChange={event => {
+                    let newPrice = ReactEvent.Synthetic.target(event)["value"]
+                    let price = int_of_string_opt(newPrice)
+                    send(UpdatePrice(price))
                   }}
                 />
               </div>

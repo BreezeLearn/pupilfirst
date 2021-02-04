@@ -10,6 +10,7 @@ module CourseEditable
     property :featured
     property :progression_behavior, validates: { inclusion: { in: Course::VALID_PROGRESSION_BEHAVIORS } }
     property :progression_limit, validates: { numericality: { min: 1, max: 3, allow_nil: true } }
+    property :price, validates: { numericality: { min: 1, allow_nil: true } }
 
     validate :limited_progression_requires_details
   end
