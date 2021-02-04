@@ -18,6 +18,7 @@ type state = {
   featured: bool,
   progressionBehavior: progressionBehavior,
   progressionLimit: int,
+  price: option<int>,
 }
 
 type action =
@@ -241,6 +242,7 @@ let computeInitialState = course =>
       featured: course |> Course.featured,
       progressionBehavior: course |> Course.progressionBehavior,
       progressionLimit: Course.progressionLimit(course)->Belt.Option.getWithDefault(1),
+      price: course.price,
     }
   | None => {
       name: "",
@@ -256,6 +258,7 @@ let computeInitialState = course =>
       featured: true,
       progressionBehavior: #Limited,
       progressionLimit: 1,
+      price: None,
     }
   }
 
@@ -331,6 +334,15 @@ let make = (~course, ~hideEditorActionCB, ~updateCourseCB) => {
                   maxLength=150
                   onChange={event =>
                     updateDescription(send, ReactEvent.Form.target(event)["value"])}
+                />
+              </div>
+              <div className="mt-5">
+                <input
+                  placeholder="Price"
+                  value={switch state.price {
+                  | None => ""
+                  | Some(price) => string_of_int(price)
+                  }}
                 />
               </div>
               <School__InputGroupError

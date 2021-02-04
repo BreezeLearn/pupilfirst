@@ -2527,6 +2527,18 @@
             "deprecationReason": null
           },
           {
+            "name": "price",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "progressionBehavior",
             "description": "",
             "args": [],

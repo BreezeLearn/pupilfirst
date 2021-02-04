@@ -26,6 +26,7 @@ type t = {
   cover: option<Image.t>,
   featured: bool,
   progressionBehavior: progressionBehavior,
+  price: option<int>,
 }
 
 let name = t => t.name
@@ -113,6 +114,7 @@ let makeFromJs = rawCourse => {
     cover: makeImageFromJs(rawCourse["cover"]),
     featured: rawCourse["featured"],
     progressionBehavior: progressionBehavior,
+    price: rawCourse["price"],
   }
 }
 
@@ -136,6 +138,7 @@ module Fragments = %graphql(
     featured
     progressionBehavior
     progressionLimit
+    price
   }
   `
 )

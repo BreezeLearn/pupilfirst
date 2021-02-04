@@ -12,6 +12,7 @@ module Types
     field :featured, Boolean, null: false
     field :progression_behavior, Types::ProgressionBehaviorType, null: false
     field :progression_limit, Integer, null: true
+    field :price, Integer, null: true
 
     def grades_and_labels
       object.grade_labels.map do |grade, label|
@@ -33,7 +34,7 @@ module Types
       if image.attached?
         {
           url: Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true),
-          filename: image.filename
+          filename: image.filename,
         }
       end
     end
