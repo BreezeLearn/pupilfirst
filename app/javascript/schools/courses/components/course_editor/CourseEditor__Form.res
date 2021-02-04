@@ -70,8 +70,8 @@ let reducer = (state, action) =>
 
 module CreateCourseQuery = %graphql(
   `
-    mutation CreateCourseMutation($name: String!, $description: String!, $endsAt: ISO8601DateTime, $about: String!, $publicSignup: Boolean!, $featured: Boolean!, $progressionBehavior: ProgressionBehavior!, $progressionLimit: Int) {
-      createCourse(name: $name, description: $description, endsAt: $endsAt, about: $about, publicSignup: $publicSignup, featured: $featured, progressionBehavior: $progressionBehavior, progressionLimit: $progressionLimit) {
+    mutation CreateCourseMutation($name: String!, $description: String!, $endsAt: ISO8601DateTime, $about: String!, $publicSignup: Boolean!, $featured: Boolean!, $progressionBehavior: ProgressionBehavior!, $progressionLimit: Int, $price: Int) {
+      createCourse(name: $name, description: $description, endsAt: $endsAt, about: $about, publicSignup: $publicSignup, featured: $featured, progressionBehavior: $progressionBehavior, progressionLimit: $progressionLimit, price: $price) {
         course {
           ...Course.Fragments.AllFields
         }
@@ -133,6 +133,7 @@ let createCourse = (state, send, updateCourseCB) => {
     ~featured=state.featured,
     ~progressionBehavior=state.progressionBehavior,
     ~progressionLimit=?progressionLimitForQuery(state),
+    ~price=?state.price,
     (),
   )
 

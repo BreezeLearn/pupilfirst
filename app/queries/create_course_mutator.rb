@@ -12,6 +12,7 @@ class CreateCourseMutator < ApplicationQuery
         featured: featured,
         progression_behavior: progression_behavior,
         progression_limit: sanitized_progression_limit,
+        price: price,
       )
 
       Courses::DemoContentService.new(course).execute
