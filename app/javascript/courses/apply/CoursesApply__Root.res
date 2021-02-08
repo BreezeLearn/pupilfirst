@@ -31,9 +31,9 @@ let make = (
   ~name,
   ~privacyPolicy,
   ~termsAndConditions,
+  ~price,
 ) => {
   let (view, setView) = React.useState(() => Apply)
-
   <div className="flex min-h-screen bg-gray-100 items-center justify-center">
     <div className="py-8 w-full">
       <div className="container mx-auto px-3 max-w-lg">
@@ -55,7 +55,7 @@ let make = (
               {switch view {
               | Apply =>
                 <CoursesApply__Form
-                  courseName courseId setViewEmailSent={setViewEmailSent(setView)} email name
+                  courseName courseId setViewEmailSent={setViewEmailSent(setView)} email name price
                 />
               | EmailSent => emailSentMessage()
               }}

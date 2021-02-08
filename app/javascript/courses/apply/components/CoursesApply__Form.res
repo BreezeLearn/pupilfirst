@@ -26,17 +26,21 @@ let createApplicant = (courseId, email, name, setSaving, setViewEmailSent, event
 let isInvalidEmail = email => email |> EmailUtils.isInvalid(false)
 let saveDisabled = (email, name, saving) => isInvalidEmail(email) || (saving || name == "")
 
-let buttonText = (email, name, saving) =>
+let buttonText = (email, name, saving, ~price) =>
   switch (saving, email == "", isInvalidEmail(email), name == "") {
   | (true, _, _, _) => "Saving"
   | (false, true, _, _) => "Enter your Email"
   | (false, false, true, _) => "Enter a valid Email"
   | (false, false, false, true) => "Enter your full name"
-  | (false, false, false, false) => "Apply"
+  | (false, false, false, false) =>
+    switch price {
+    | Some(_) => "Buy"
+    | None => "Apply"
+    }
   }
 
 @react.component
-let make = (~courseName, ~courseId, ~setViewEmailSent, ~email, ~name) => {
+let make = (~courseName, ~courseId, ~setViewEmailSent, ~email, ~name, ~price) => {
   let (email, setEmail) = React.useState(() => email |> OptionUtils.default(""))
   let (name, setName) = React.useState(() => name |> OptionUtils.default(""))
   let (saving, setSaving) = React.useState(() => false)
@@ -79,7 +83,7 @@ let make = (~courseName, ~courseId, ~setViewEmailSent, ~email, ~name) => {
       onClick={createApplicant(courseId, email, name, setSaving, setViewEmailSent)}
       className="btn btn-primary btn-large text-center w-full mt-6">
       {saving ? <FaIcon classes="fas fa-spinner fa-spin mr-2" /> : ReasonReact.null}
-      <span> {buttonText(email, name, saving) |> str} </span>
+      <span> {buttonText(email, name, saving, ~price) |> str} </span>
     </button>
   </div>
 }

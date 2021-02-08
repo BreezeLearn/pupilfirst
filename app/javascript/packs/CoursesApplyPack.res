@@ -6,6 +6,7 @@ type props = {
   name: option<string>,
   privacyPolicy: bool,
   termsAndConditions: bool,
+  price: option<int>,
 }
 
 let decodeProps = json => {
@@ -18,6 +19,7 @@ let decodeProps = json => {
     name: json |> field("name", optional(string)),
     privacyPolicy: json |> field("privacyPolicy", bool),
     termsAndConditions: json |> field("termsAndConditions", bool),
+    price: json |> field("price", optional(int)),
   }
 }
 
@@ -32,6 +34,7 @@ ReactDOMRe.renderToElementWithId(
     name=props.name
     privacyPolicy=props.privacyPolicy
     termsAndConditions=props.termsAndConditions
+    price=props.price
   />,
   "react-root",
 )
