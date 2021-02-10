@@ -9,7 +9,15 @@ module CreateApplicantQuery = %graphql(
    }
  `
 )
-
+module CreatePaymentQuery = %graphql(
+  `
+  mutation CreatePaymentMutation($courseId:ID!){
+  createCoursePaymentLink(courseId:$courseId) {
+    paymentLink
+  }
+}	
+  `
+)
 let createApplicant = (courseId, email, name, setSaving, setViewEmailSent, event) => {
   event |> ReactEvent.Mouse.preventDefault
   setSaving(_ => true)
@@ -23,6 +31,18 @@ let createApplicant = (courseId, email, name, setSaving, setViewEmailSent, event
   |> ignore
 }
 
+let getPaymentLink = (~courseId) => {
+  CreatePaymentQuery.make(~courseId, ()) |> GraphqlQuery.sendQuery |> Js.Promise.then_(response => {
+    let link = response["createCoursePaymentLink"]["paymentLink"]
+    Js.Promise.resolve(link)
+  })
+}
+
+let changeURL = %raw(`
+function changeURL(link){
+  window.location = link;
+}
+`)
 let isInvalidEmail = email => email |> EmailUtils.isInvalid(false)
 let saveDisabled = (email, name, saving) => isInvalidEmail(email) || (saving || name == "")
 
@@ -38,7 +58,6 @@ let buttonText = (email, name, saving, ~price) =>
     | None => "Apply"
     }
   }
-
 @react.component
 let make = (~courseName, ~courseId, ~setViewEmailSent, ~email, ~name, ~price) => {
   let (email, setEmail) = React.useState(() => email |> OptionUtils.default(""))
@@ -82,7 +101,17 @@ let make = (~courseName, ~courseId, ~setViewEmailSent, ~email, ~name, ~price) =>
       disabled={saveDisabled(email, name, saving)}
       onClick={switch price {
       | None => createApplicant(courseId, email, name, setSaving, setViewEmailSent)
-      | Some(_) => _ => ()
+      | Some(_) =>
+        _ => {
+          setSaving(_ => true)
+          getPaymentLink(~courseId) |> Js.Promise.then_(link => {
+            Webapi.Dom.Location.setHref(Webapi.Dom.location, link)
+            Js.Promise.resolve()
+          }) |> Js.Promise.catch(_ => {
+            setSaving(_ => false)
+            Js.Promise.resolve()
+          }) |> ignore
+        }
       }}
       className="btn btn-primary btn-large text-center w-full mt-6">
       {saving ? <FaIcon classes="fas fa-spinner fa-spin mr-2" /> : ReasonReact.null}

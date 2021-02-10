@@ -40,6 +40,11 @@ class CoursePolicy < ApplicationPolicy
     record&.school == current_school && record.public_signup?
   end
 
+  def verifypayment?
+    #TODO : FIND ABOUT THIS
+    true
+  end
+
   alias students? review?
 
   class Scope < Scope
