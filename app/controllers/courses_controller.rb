@@ -22,6 +22,10 @@ class CoursesController < ApplicationController
   # GET /courses/:id/apply
   def apply
     @course = find_course
+    @initial_view = 'Apply'
+    if (session[:email_sent])
+      @initial_view = 'EmailSent'
+    end
     save_tag
     render layout: 'tailwind'
   end
@@ -57,8 +61,9 @@ class CoursesController < ApplicationController
           applicant.regenerate_login_token
           applicant.update!(login_mail_sent_at: Time.zone.now)
           ApplicantMailer.enrollment_verification(applicant).deliver_now
+          session[:email_sent] = true
         end
-        redirect_to :action => 'curriculum'
+        redirect_to :action => 'apply'
       else
         print 'else here'
       end

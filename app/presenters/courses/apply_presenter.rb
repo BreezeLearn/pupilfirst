@@ -1,7 +1,8 @@
 module Courses
   class ApplyPresenter < ApplicationPresenter
-    def initialize(view_context, course)
+    def initialize(view_context, course, initial_view)
       @course = course
+      @initial_view = initial_view
       super(view_context)
     end
 
@@ -19,6 +20,7 @@ module Courses
         privacy_policy: SchoolString::PrivacyPolicy.saved?(current_school),
         terms_and_conditions: SchoolString::TermsAndConditions.saved?(current_school),
         price: @course.price,
+        initial_view: @initial_view,
       }
     end
   end

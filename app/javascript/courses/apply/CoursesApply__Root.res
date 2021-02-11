@@ -32,8 +32,9 @@ let make = (
   ~privacyPolicy,
   ~termsAndConditions,
   ~price,
+  ~initialView=?,
 ) => {
-  let (view, setView) = React.useState(() => Apply)
+  let (view, setView) = React.useState(() => Belt.Option.getWithDefault(initialView, Apply))
   <div className="flex min-h-screen bg-gray-100 items-center justify-center">
     <div className="py-8 w-full">
       <div className="container mx-auto px-3 max-w-lg">

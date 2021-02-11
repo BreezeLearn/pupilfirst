@@ -7,6 +7,7 @@ type props = {
   privacyPolicy: bool,
   termsAndConditions: bool,
   price: option<int>,
+  initialView: option<CoursesApply__Root.views>,
 }
 
 let decodeProps = json => {
@@ -20,6 +21,10 @@ let decodeProps = json => {
     privacyPolicy: json |> field("privacyPolicy", bool),
     termsAndConditions: json |> field("termsAndConditions", bool),
     price: json |> field("price", optional(int)),
+    initialView: switch json |> field("initialView", string) {
+    | "EmailSent" => Some(CoursesApply__Root.EmailSent)
+    | _ => None
+    },
   }
 }
 
@@ -35,6 +40,7 @@ ReactDOMRe.renderToElementWithId(
     privacyPolicy=props.privacyPolicy
     termsAndConditions=props.termsAndConditions
     price=props.price
+    initialView=?props.initialView
   />,
   "react-root",
 )
